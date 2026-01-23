@@ -1,3 +1,5 @@
+Leclerc Alyssia
+
 # sudoku_starter
 
 Sudoku game
