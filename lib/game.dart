@@ -21,6 +21,8 @@ class Game extends StatefulWidget {
 
 class _GameState extends State<Game> {
   Puzzle? puzzle;
+  int? selectedX;
+  int? selectedY;
 
   @override
   void initState() {
@@ -66,14 +68,26 @@ class _GameState extends State<Game> {
                   crossAxisCount: 3,
                   children: List.generate(9, (y) {
                     int val = puzzle?.board()?.matrix()?[x][y].getValue() ?? 0;
-                    return Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black, width: 0.5)),
-                      child: Center(
-                        child: Text(
-                          val == 0 ? '' : val.toString(),
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedX = x;
+                          selectedY = y;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black, width: 0.5),
+                          color: (selectedX == x && selectedY == y)
+                              ? Colors.blueAccent.shade100.withAlpha(100)
+                              : Colors.transparent,
+                        ),
+                        child: Center(
+                          child: Text(
+                            val == 0 ? '' : val.toString(),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     );
