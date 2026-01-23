@@ -41,13 +41,9 @@ class _GameState extends State<Game> {
 
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: SizedBox(
           height: boxSize * 3,
           width: boxSize * 3,
@@ -57,7 +53,19 @@ class _GameState extends State<Game> {
               return Container(
                 width: boxSize,
                 height: boxSize,
-                decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  children: List.generate(9, (x) {
+                    return Container(
+                      width: 0.3,
+                      height: boxSize,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black)),
+                    );
+                  }),
+                ),
               );
             }),
           ),
