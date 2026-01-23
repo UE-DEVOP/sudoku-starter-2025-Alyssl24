@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_api/sudoku_api.dart';
 
 class Game extends StatefulWidget {
   const Game({Key? key, required this.title}) : super(key: key);
@@ -19,17 +20,23 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  int _counter = 0;
+  Puzzle? puzzle;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _generatePuzzle();
+  }
+
+  void _generatePuzzle() async {
+    try {
+      PuzzleOptions puzzleOptions = PuzzleOptions();
+      puzzle = Puzzle(puzzleOptions);
+      await puzzle!.generate();
+      setState(() {});
+    } catch (e) {
+      print('Error generating puzzle: $e');
+    }
   }
 
   @override
@@ -57,12 +64,18 @@ class _GameState extends State<Game> {
                     BoxDecoration(border: Border.all(color: Colors.blueAccent)),
                 child: GridView.count(
                   crossAxisCount: 3,
-                  children: List.generate(9, (x) {
+                  children: List.generate(9, (y) {
+                    int val = puzzle?.board()?.matrix()?[x][y].getValue() ?? 0;
                     return Container(
-                      width: 0.3,
-                      height: boxSize,
                       decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black)),
+                          border: Border.all(color: Colors.black, width: 0.5)),
+                      child: Center(
+                        child: Text(
+                          val == 0 ? '' : val.toString(),
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     );
                   }),
                 ),
