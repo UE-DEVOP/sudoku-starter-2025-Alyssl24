@@ -107,7 +107,9 @@ class _GameState extends State<Game> {
                                   Border.all(color: Colors.black, width: 0.5),
                               color: (selectedX == x && selectedY == y)
                                   ? Colors.blueAccent.shade100.withAlpha(100)
-                                  : Colors.transparent,
+                                  : (locked
+                                      ? Colors.grey.shade300
+                                      : Colors.transparent),
                             ),
                             child: Center(
                               child: Text(
