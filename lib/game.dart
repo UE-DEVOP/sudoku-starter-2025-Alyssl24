@@ -84,6 +84,11 @@ class _GameState extends State<Game> {
                       children: List.generate(9, (y) {
                         int val =
                             puzzle?.board()?.matrix()?[x][y]?.getValue() ?? 0;
+                        int expected = puzzle
+                                ?.solvedBoard()
+                                ?.matrix()?[x][y]
+                                ?.getValue() ??
+                            0;
 
                         final locked =
                             (puzzle == null) ? true : isPrefilled[x][y];
@@ -106,9 +111,13 @@ class _GameState extends State<Game> {
                             ),
                             child: Center(
                               child: Text(
-                                val == 0 ? '' : val.toString(),
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                val == 0 ? expected.toString() : val.toString(),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      val == 0 ? Colors.black12 : Colors.black,
+                                ),
                               ),
                             ),
                           ),
