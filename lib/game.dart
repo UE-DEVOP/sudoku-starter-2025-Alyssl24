@@ -23,6 +23,7 @@ class _GameState extends State<Game> {
   Puzzle? puzzle;
   int? selectedX;
   int? selectedY;
+  List<List<bool>> isPrefilled = List.generate(9, (_) => List.filled(9, false));
 
   @override
   void initState() {
@@ -35,6 +36,15 @@ class _GameState extends State<Game> {
       PuzzleOptions puzzleOptions = PuzzleOptions();
       puzzle = Puzzle(puzzleOptions);
       await puzzle!.generate();
+
+      isPrefilled = List.generate(9, (_) => List.filled(9, false));
+      for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < 9; y++) {
+          final v = puzzle?.board()?.matrix()?[x][y].getValue() ?? 0;
+          isPrefilled[x][y] = (v != 0);
+        }
+      }
+
       setState(() {});
     } catch (e) {
       print('Error generating puzzle: $e');
@@ -73,14 +83,19 @@ class _GameState extends State<Game> {
                       crossAxisCount: 3,
                       children: List.generate(9, (y) {
                         int val =
-                            puzzle?.board()?.matrix()?[x][y].getValue() ?? 0;
+                            puzzle?.board()?.matrix()?[x][y]?.getValue() ?? 0;
+
+                        final locked =
+                            (puzzle == null) ? true : isPrefilled[x][y];
                         return InkWell(
-                          onTap: () {
-                            setState(() {
-                              selectedX = x;
-                              selectedY = y;
-                            });
-                          },
+                          onTap: locked
+                              ? null
+                              : () {
+                                  setState(() {
+                                    selectedX = x;
+                                    selectedY = y;
+                                  });
+                                },
                           child: Container(
                             decoration: BoxDecoration(
                               border:
@@ -117,7 +132,8 @@ class _GameState extends State<Game> {
                     onPressed: () {
                       if (puzzle == null ||
                           selectedX == null ||
-                          selectedY == null) return;
+                          selectedY == null ||
+                          isPrefilled[selectedX!][selectedY!]) return;
 
                       int value = i + 1;
                       final Position pos =
@@ -145,7 +161,8 @@ class _GameState extends State<Game> {
                     onPressed: () {
                       if (puzzle == null ||
                           selectedX == null ||
-                          selectedY == null) return;
+                          selectedY == null ||
+                          isPrefilled[selectedX!][selectedY!]) return;
 
                       int value = i + 6;
                       final Position pos =
